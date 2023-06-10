@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 export default function Home() {
   const [employees, setEmployees] = useState([]);
+
+  const { id } = useParams();
 
   useEffect(() => {
     loadEmployees();
@@ -12,6 +14,13 @@ export default function Home() {
   const loadEmployees = async () => {
     const result = await axios.get("http://localhost:8080/api/v1/employees");
     setEmployees(result.data);
+  };
+
+  const deleteEmployee = async (id) => {
+    const result = await axios.delete(
+      `http://localhost:8080/api/v1/employee/${id}`
+    );
+    loadEmployees(result.data);
   };
   return (
     <div className="container">
@@ -39,14 +48,24 @@ export default function Home() {
                 <td>{employee.dateOfBirth}</td>
                 <td>{employee.workingSince}</td>
                 <td>
-                  <button className="btn btn-primary mx-2">View</button>
+                  <Link
+                    className="btn btn-primary mx-2"
+                    to={`/viewEmployee/${employee.id}`}
+                  >
+                    View
+                  </Link>
                   <Link
                     className="btn btn-outline-primary mx-2"
                     to={`/editEmployee/${employee.id}`}
                   >
                     Edit
                   </Link>
-                  <button className="btn btn-danger mx-2">Delete</button>
+                  <button
+                    className="btn btn-danger mx-2"
+                    onClick={() => deleteEmployee(employee.id)}
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}

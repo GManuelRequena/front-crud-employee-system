@@ -23,7 +23,7 @@ export default function EditEmployee() {
 
   useEffect(() => {
     loadEmployee();
-  });
+  }, []);
 
   const onSubmit = async (e) => {
     e.preventDefault();
